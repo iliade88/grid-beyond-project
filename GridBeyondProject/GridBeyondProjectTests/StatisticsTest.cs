@@ -28,7 +28,7 @@ namespace GridBeyondProjectTests
         }
 
         [Fact]
-        public void FindMinimumCost()
+        public void FindMinimumCostWhenIsTheFirstElement()
         {
             decimal[] costs = { 2, 4, 7 };
             List<MarketPrice> marketPriceData = InitializeTestDataSet(costs);
@@ -37,6 +37,30 @@ namespace GridBeyondProjectTests
 
             Assert.Equal(2, statistics.MostCheapTime.Price);
             Assert.Equal(GetStartDate(), statistics.MostCheapTime.Time);
+        }
+
+        [Fact]
+        public void FindMinimumCostWhenIsTheLastElement()
+        {
+            decimal[] costs = { 7, 4, 2 };
+            List<MarketPrice> marketPriceData = InitializeTestDataSet(costs);
+
+            Statistics statistics = new Statistics(marketPriceData);
+
+            Assert.Equal(2, statistics.MostCheapTime.Price);
+            Assert.Equal(GetStartDate().AddMinutes(60), statistics.MostCheapTime.Time);
+        }
+
+        [Fact]
+        public void FindMinimumCost()
+        {
+            decimal[] costs = { 4, 2, 7 };
+            List<MarketPrice> marketPriceData = InitializeTestDataSet(costs);
+
+            Statistics statistics = new Statistics(marketPriceData);
+
+            Assert.Equal(2, statistics.MostCheapTime.Price);
+            Assert.Equal(GetStartDate().AddMinutes(30), statistics.MostCheapTime.Time);
         }
     }
 }
