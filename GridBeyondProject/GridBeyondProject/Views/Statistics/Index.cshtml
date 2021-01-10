@@ -25,6 +25,28 @@
     </tbody>
 </table>
 
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="row" colspan="2">Most expensive Window</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@Html.DisplayFor(modelItem => modelItem.MostExpensiveHourWindow.StartWindow.Time)</td>
+            <td>@Html.DisplayFor(modelItem => modelItem.MostExpensiveHourWindow.StartWindow.Price)</td>
+        </tr>
+        <tr>
+            <td>@Html.DisplayFor(modelItem => modelItem.MostExpensiveHourWindow.EndWindow.Time)</td>
+            <td>@Html.DisplayFor(modelItem => modelItem.MostExpensiveHourWindow.EndWindow.Price)</td>
+        </tr>
+        <tr>
+            <td>Total Cost</td>
+            <td>@Html.DisplayFor(modelItem => modelItem.MostExpensiveHourWindow.Cost)</td>
+        </tr>
+    </tbody>
+</table>
+
 @foreach (var marketPrice in Model.MarketPriceData)
 {
     <table class="table">
