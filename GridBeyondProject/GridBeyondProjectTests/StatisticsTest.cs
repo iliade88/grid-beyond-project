@@ -62,5 +62,41 @@ namespace GridBeyondProjectTests
             Assert.Equal(2, statistics.MostCheapTime.Price);
             Assert.Equal(GetStartDate().AddMinutes(30), statistics.MostCheapTime.Time);
         }
+
+        [Fact]
+        public void FindMaximumCostWhenIsTheFirstElement()
+        {
+            decimal[] costs = { 7, 4, 2 };
+            List<MarketPrice> marketPriceData = InitializeTestDataSet(costs);
+
+            Statistics statistics = new Statistics(marketPriceData);
+
+            Assert.Equal(7, statistics.MostExpensiveTime.Price);
+            Assert.Equal(GetStartDate(), statistics.MostExpensiveTime.Time);
+        }
+
+        [Fact]
+        public void FindMaximumCostWhenIsTheLastElement()
+        {
+            decimal[] costs = { 2, 4, 7 };
+            List<MarketPrice> marketPriceData = InitializeTestDataSet(costs);
+
+            Statistics statistics = new Statistics(marketPriceData);
+
+            Assert.Equal(7, statistics.MostExpensiveTime.Price);
+            Assert.Equal(GetStartDate().AddMinutes(60), statistics.MostExpensiveTime.Time);
+        }
+
+        [Fact]
+        public void FindMaximumCost()
+        {
+            decimal[] costs = { 4, 7, 2 };
+            List<MarketPrice> marketPriceData = InitializeTestDataSet(costs);
+
+            Statistics statistics = new Statistics(marketPriceData);
+
+            Assert.Equal(7, statistics.MostExpensiveTime.Price);
+            Assert.Equal(GetStartDate().AddMinutes(30), statistics.MostExpensiveTime.Time);
+        }
     }
 }

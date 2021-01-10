@@ -10,11 +10,13 @@ namespace GridBeyondProject.Models
         public List<MarketPriceDTO> MarketPriceData { get; set; }
 
         public MarketPriceDTO MostCheapTime { get; set; }
+        public MarketPriceDTO MostExpensiveTime { get; set; }
 
         public Statistics(List<MarketPrice> marketPriceDataSet)
         {
             UpdateMarketPriceData(marketPriceDataSet);
             UpdateMostCheapTime();
+            UpdateMostExpensiveTime();
         }
 
         private void UpdateMarketPriceData(List<MarketPrice> marketPriceDataSet)
@@ -27,6 +29,11 @@ namespace GridBeyondProject.Models
         private void UpdateMostCheapTime()
         {
             MostCheapTime = MarketPriceData.Aggregate((time1, time2) => time1.Price < time2.Price ? time1 : time2);
+        }
+
+        private void UpdateMostExpensiveTime()
+        {
+            MostExpensiveTime = MarketPriceData.Aggregate((time1, time2) => time1.Price > time2.Price ? time1 : time2);
         }
     }
 }
