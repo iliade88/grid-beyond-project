@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GridBeyondProject.Models;
+using GridBeyondProject.Services;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,6 +17,17 @@ namespace GridBeyondProject.Controllers
             return View();
         }
 
+        public ActionResult DeleteAll()
+        {
+            MarketPriceDBContext db = new MarketPriceDBContext();
+            db.MarketPrices.RemoveRange(db.MarketPrices.ToList());
+            db.SaveChanges();
+
+            TempData["SaveFileMessage"] = "Everything deleted!";
+
+            return RedirectToAction("Index");
+        }
+
         [HttpPost]
         public ActionResult SaveFile(HttpPostedFileBase file)
         {
@@ -24,7 +37,11 @@ namespace GridBeyondProject.Controllers
                     string path = Path.Combine(Server.MapPath("~/UploadedFiles"),
                                                Path.GetFileName(file.FileName));
                     file.SaveAs(path);
+
+                    UploadService.ProcessFile(path);
+
                     TempData["SaveFileMessage"] = "File uploaded successfully";
+                    return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
@@ -37,6 +54,5 @@ namespace GridBeyondProject.Controllers
 
             return RedirectToAction("Index");
         }
-
     }
 }
