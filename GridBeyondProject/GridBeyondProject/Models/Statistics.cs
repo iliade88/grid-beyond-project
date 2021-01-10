@@ -15,7 +15,8 @@ namespace GridBeyondProject.Models
 
     public class Statistics
     {
-        public List<MarketPriceDTO> MarketPriceData { get; set; }
+        public List<MarketPriceDTO> MarketPriceDataSumByDay { get; set; }
+        public List<List<MarketPriceDTO>> MarketPriceDay { get; set; }
 
         public MarketPriceDTO MostCheapTime { get; set; }
         public MarketPriceDTO MostExpensiveTime { get; set; }
@@ -30,48 +31,72 @@ namespace GridBeyondProject.Models
 
         public void UpdateStatistics(List<MarketPrice> marketPriceDataSet)
         {
-            UpdateMarketPriceData(marketPriceDataSet);
-            UpdateMostCheapTime();
-            UpdateMostExpensiveTime();
-            UpdateAverageCost();
-            UpdateMostExpensiveHourWindow();
+            UpdateMarketPriceDataSumByDay(marketPriceDataSet);
+            UpdateMarketPriceDay(marketPriceDataSet);
+            UpdateMostCheapTime(marketPriceDataSet);
+            UpdateMostExpensiveTime(marketPriceDataSet);
+            UpdateAverageCost(marketPriceDataSet);
+            UpdateMostExpensiveHourWindow(marketPriceDataSet);
         }
 
-        private void UpdateMarketPriceData(List<MarketPrice> marketPriceDataSet)
+        private void UpdateMarketPriceDataSumByDay(List<MarketPrice> marketPriceDataSet)
         {
-            MarketPriceData = marketPriceDataSet
-                    .Select(x => new MarketPriceDTO { Time = x.Time, Price = x.Price })
+            MarketPriceDataSumByDay = marketPriceDataSet
+                .GroupBy(x => new DateTime(x.Time.Year, x.Time.Month, x.Time.Day))
+                .Select(g => new MarketPriceDTO { Time = g.Key, ShortDateString = g.Key.ToShortDateString(), Price = g.Sum(mk => mk.Price) })
+                .ToList();
+        }
+
+        private List<MarketPriceDTO> GetMarketPriceOfDay(List<MarketPrice> marketPriceDataSet, DateTime date)
+        {
+            return marketPriceDataSet
+                    .Where(x => new DateTime(x.Time.Year, x.Time.Month, x.Time.Day) == date)
+                    .Select(x => new MarketPriceDTO { Time = x.Time, ShortDateString = x.Time.ToShortDateString(), Price = x.Price })
                     .ToList();
         }
 
-        private void UpdateMostCheapTime()
+        private void UpdateMarketPriceDay(List<MarketPrice> marketPriceDataSet)
         {
-            MostCheapTime = MarketPriceData.Aggregate((time1, time2) => time1.Price < time2.Price ? time1 : time2);
+            MarketPriceDay = new List<List<MarketPriceDTO>>();
+
+            foreach (var marketPriceOnDay in MarketPriceDataSumByDay)
+            {
+                List<MarketPriceDTO> dailyMarketPrice = GetMarketPriceOfDay(marketPriceDataSet, marketPriceOnDay.Time);
+
+                MarketPriceDay.Add(dailyMarketPrice);
+            }
         }
 
-        private void UpdateMostExpensiveTime()
+        private void UpdateMostCheapTime(List<MarketPrice> marketPriceDataSet)
         {
-            MostExpensiveTime = MarketPriceData.Aggregate((time1, time2) => time1.Price > time2.Price ? time1 : time2);
+            MarketPrice cheapestMarketPrice = marketPriceDataSet.Aggregate((time1, time2) => time1.Price < time2.Price ? time1 : time2);
+            MostCheapTime = new MarketPriceDTO(cheapestMarketPrice);
         }
 
-        private void UpdateAverageCost()
+        private void UpdateMostExpensiveTime(List<MarketPrice> marketPriceDataSet)
         {
-            AverageCost = MarketPriceData.Average((time) => time.Price);
+            MarketPrice mostExpensiveMarketPrice = marketPriceDataSet.Aggregate((time1, time2) => time1.Price > time2.Price ? time1 : time2);
+            MostExpensiveTime = new MarketPriceDTO(mostExpensiveMarketPrice);
         }
 
-        private void UpdateMostExpensiveHourWindow()
+        private void UpdateAverageCost(List<MarketPrice> marketPriceDataSet)
+        {
+            AverageCost = marketPriceDataSet.Average((time) => time.Price);
+        }
+
+        private void UpdateMostExpensiveHourWindow(List<MarketPrice> marketPriceData)
         {
             MostExpensiveHourWindow = new HourWindow
             {
-                StartWindow = MarketPriceData.ElementAt(0),
-                EndWindow = MarketPriceData.ElementAt(1)
+                StartWindow = new MarketPriceDTO(marketPriceData.ElementAt(0)),
+                EndWindow = new MarketPriceDTO(marketPriceData.ElementAt(1))
             };
             MostExpensiveHourWindow.Cost = MostExpensiveHourWindow.StartWindow.Price + MostExpensiveHourWindow.EndWindow.Price;
 
-            for (int i = 1; i < MarketPriceData.Count() - 1; i++)
+            for (int i = 1; i < marketPriceData.Count() - 1; i++)
             {
-                MarketPriceDTO actualStartWindow = MarketPriceData.ElementAt(i);
-                MarketPriceDTO actualEndWindow = MarketPriceData.ElementAt(i + 1);
+                MarketPriceDTO actualStartWindow = new MarketPriceDTO(marketPriceData.ElementAt(i));
+                MarketPriceDTO actualEndWindow = new MarketPriceDTO(marketPriceData.ElementAt(i + 1));
                 decimal windowCost = actualStartWindow.Price + actualEndWindow.Price;
 
                 if (windowCost > MostExpensiveHourWindow.Cost)
