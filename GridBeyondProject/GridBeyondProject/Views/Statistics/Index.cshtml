@@ -47,12 +47,43 @@
     </tbody>
 </table>
 
-@foreach (var marketPrice in Model.MarketPriceData)
-{
-    <table class="table">
-        <tr>
-            <td>@marketPrice.Time</td>
-            <td>@marketPrice.Price</td>
-        </tr>
-    </table>
-}
+<div><canvas id="TimeCostChart"></canvas></div>
+
+<script>
+        var labels = new Array();
+        var series = new Array();
+
+        @foreach (var data in Model.MarketPriceData)
+        {
+            @:labels.push("@data.Time");
+            @:series.push("@data.Price");
+        }
+
+        var ctx = document.getElementById("TimeCostChart").getContext("2d");
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data:
+            {
+                labels: labels,
+                datasets:
+                    [{
+                        label: '',
+                        backgroundColor: 'rgb(255, 99, 132)',
+                        borderColor: 'rgb(121, 0, 31)',
+                        data: series
+                    }]
+            },
+            options: {
+                legend: {
+                    display: false
+                },
+                scales: {
+            xAxes: [{
+                ticks: {
+                    fontColor: "#FFF"
+                }
+            }]
+        }
+            }
+         });
+</script>
