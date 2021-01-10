@@ -1,0 +1,17 @@
+﻿@model GridBeyondProject.Models.Statistics
+
+@{
+    ViewBag.Title = "Statistics";
+}
+
+<h2>Statistics</h2>
+
+@foreach (var marketPrice in Model.MarketPriceData)
+{
+<table class="table">
+    <tr>
+        <td>@marketPrice.Time</td>
+        <td>@marketPrice.Price</td>
+    </tr>
+</table>
+}

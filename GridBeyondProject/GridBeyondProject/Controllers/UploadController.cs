@@ -41,7 +41,7 @@ namespace GridBeyondProject.Controllers
                     UploadService.ProcessFile(path);
 
                     TempData["SaveFileMessage"] = "File uploaded successfully";
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index", "Statistics");
                 }
                 catch (Exception ex)
                 {
