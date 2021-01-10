@@ -6,12 +6,22 @@
 
 <h2>Statistics</h2>
 
+<table class="table">
+    <tbody>
+        <tr>
+            <th scope="row">Minimum</th>
+            <td>@Html.DisplayFor(modelItem => modelItem.MostCheapTime.Time)</td>
+            <td>@Html.DisplayFor(modelItem => modelItem.MostCheapTime.Price)</td>
+        </tr>
+    </tbody>
+</table>
+
 @foreach (var marketPrice in Model.MarketPriceData)
 {
-<table class="table">
-    <tr>
-        <td>@marketPrice.Time</td>
-        <td>@marketPrice.Price</td>
-    </tr>
-</table>
+    <table class="table">
+        <tr>
+            <td>@marketPrice.Time</td>
+            <td>@marketPrice.Price</td>
+        </tr>
+    </table>
 }
