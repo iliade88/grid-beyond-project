@@ -51,35 +51,35 @@
 <div><canvas id="SumByDayChart"></canvas></div>
 
 <script>
-            var labels = new Array();
-            var series = new Array();
+    var labels = new Array();
+    var series = new Array();
 
-            @foreach (var data in Model.MarketPriceDataSumByDay)
-            {
-                @:labels.push("@data.ShortDateString");
-                @:series.push("@data.Price");
-            }
+    @foreach (var data in Model.MarketPriceDataSumByDay)
+    {
+        @:labels.push("@data.ShortDateString");
+        @:series.push("@data.Price");
+    }
 
     var ctx = document.getElementById("SumByDayChart").getContext("2d");
-            var chart = new Chart(ctx, {
-                type: 'line',
-                data:
-                {
-                    labels: labels,
-                    datasets:
-                        [{
-                            label: '',
-                            backgroundColor: 'rgb(255, 99, 132)',
-                            borderColor: 'rgb(121, 0, 31)',
-                            data: series
-                        }]
-                },
-                options: {
-                    legend: {
-                        display: false
-                    }
-                }
-             });
+    var chart = new Chart(ctx, {
+        type: 'line',
+        data:
+        {
+            labels: labels,
+            datasets:
+                [{
+                    label: '',
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(121, 0, 31)',
+                    data: series
+                }]
+        },
+        options: {
+            legend: {
+                display: false
+            }
+        }
+        });
 </script>
 
 @foreach (var dayDataSet in Model.MarketPriceDay)
