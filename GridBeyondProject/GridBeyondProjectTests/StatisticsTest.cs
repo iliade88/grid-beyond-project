@@ -1,6 +1,7 @@
 using GridBeyondProject.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace GridBeyondProjectTests
@@ -97,6 +98,18 @@ namespace GridBeyondProjectTests
 
             Assert.Equal(7, statistics.MostExpensiveTime.Price);
             Assert.Equal(GetStartDate().AddMinutes(30), statistics.MostExpensiveTime.Time);
+        }
+
+        [Fact]
+        public void CalculateAverage()
+        {
+            decimal[] costs = { 2, 4, 7 };
+            List<MarketPrice> marketPriceData = InitializeTestDataSet(costs);
+            decimal average = costs.Sum() / costs.Count();
+
+            Statistics statistics = new Statistics(marketPriceData);
+
+            Assert.Equal(average, statistics.AverageCost);
         }
     }
 }
